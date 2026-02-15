@@ -1,16 +1,15 @@
 import { CheckCircle2, ImageIcon, UploadIcon } from "lucide-react";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useOutletContext } from "react-router";
 
 import {
-  PROGRESS_STEP,
   PROGRESS_INTERVAL_MS,
   REDIRECT_DELAY_MS,
   PROGRESS_INCREMENT,
 } from "../lib/constants";
 
 interface UploadProps {
-    onComplete?: (base64Image: string) => void;
+  onComplete?: (base64Image: string) => void;
 }
 
 const Upload = ({ onComplete }: UploadProps) => {
@@ -20,34 +19,74 @@ const Upload = ({ onComplete }: UploadProps) => {
 
   const { isSignedIn } = useOutletContext<AuthContext>();
 
+  // Ref: store interval ID for cleanup
+  const uploadIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Process file: read as base64, animate progress, call onComplete
-  const processFile = useCallback((file: File) => {
-    if(!isSignedIn) return;
+  const processFile = useCallback(
+    (file: File) => {
+      if (!isSignedIn) return;
 
-    setFile(file);
-    setProgress(0);
-    const reader = new FileReader();
-    reader.onloadend = () => {
+      setFile(file);
+      setProgress(0);
+      // Clear any previous interval
+      if (uploadIntervalRef.current) {
+        clearInterval(uploadIntervalRef.current);
+        uploadIntervalRef.current = null;
+      }
+      const reader = new FileReader();
+      reader.onerror = () => {
+        setFile(null);
+        setProgress(0);
+      };
+      reader.onloadend = () => {
         const base64Data = reader.result as string;
+        if (uploadIntervalRef.current) {
+          clearInterval(uploadIntervalRef.current);
+          uploadIntervalRef.current = null;
+        }
+        uploadIntervalRef.current = setInterval(() => {
+          setProgress((prev) => {
+            const next = prev + PROGRESS_INCREMENT;
+            if (next >= 100) {
+              if (uploadIntervalRef.current) {
+                clearInterval(uploadIntervalRef.current);
+                uploadIntervalRef.current = null;
+              }
+              setTimeout(() => {
+                onComplete?.(base64Data);
+              }, REDIRECT_DELAY_MS);
+              return 100;
+            }
+            return next;
+          });
+        }, PROGRESS_INTERVAL_MS);
+      };
 
-        const interval = setInterval(() => {
-            setProgress((prev) => {
-                const next = prev + PROGRESS_INCREMENT;
-                if(next >= 100) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        onComplete?.(base64Data);
-                    },REDIRECT_DELAY_MS);
-                    return 100;
-                }
-                return next;
-            });
+      reader.onerror = () => {
+        if (uploadIntervalRef.current) {
+          clearInterval(uploadIntervalRef.current);
+          uploadIntervalRef.current = null;
+        }
+        setProgress(0);
+        setFile(null);
+        if (onComplete) onComplete(null as any); // or pass error object if needed
+      };
 
-        },PROGRESS_INTERVAL_MS);
-    }
-    reader.readAsDataURL(file);
-  },[isSignedIn, onComplete]);
+      reader.readAsDataURL(file);
+    },
+    [isSignedIn, onComplete],
+  );
+
+  // Cleanup interval on unmount
+  useEffect(() => {
+    return () => {
+      if (uploadIntervalRef.current) {
+        clearInterval(uploadIntervalRef.current);
+        uploadIntervalRef.current = null;
+      }
+    };
+  }, []);
 
   // Handle file input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,10 +112,10 @@ const Upload = ({ onComplete }: UploadProps) => {
     e.preventDefault();
     setIsDragging(false);
     if (!isSignedIn) return;
-    const files = e.dataTransfer.files;
-    if (files && files[0]) {
-      setFile(files[0]);
-      processFile(files[0]);
+    const droppedFile = e.dataTransfer.files[0];
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    if (droppedFile && allowedTypes.includes(droppedFile.type)) {
+      processFile(droppedFile);
     }
   };
 
