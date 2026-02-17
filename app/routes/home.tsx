@@ -14,7 +14,7 @@ export function meta({}: Route.MetaArgs) {
     { name: "description", content: "Welcome to Roomify!" },
   ];
 }
-
+ 
 export default function Home() {
   const navigate = useNavigate();
   const [projects, setProjects] = useState<DesignItem[]>([]);
