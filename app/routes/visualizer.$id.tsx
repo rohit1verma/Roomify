@@ -50,15 +50,23 @@ const visualizerId = () => {
     }
   };
 
-  const handleExport = () => {
+  const handleExport = async() => {
     if (!currentImage) return;
 
+     try {
+    const res = await fetch(currentImage);
+    const blob = await res.blob();
+    const blobUrl = URL.createObjectURL(blob);
     const link = document.createElement("a");
-    link.href = currentImage;
+    link.href = blobUrl;
     link.download = `roomify-${id || "design"}.png`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(blobUrl);
+     }catch(err){
+      console.error("export failed:",err);
+     }
   };
 
   const runGeneration = async (item: DesignItem) => {
@@ -247,7 +255,7 @@ const visualizerId = () => {
                   <img
                     src={project.sourceImage}
                     alt='Before'
-                    className='comapre-img'
+                    className='compare-img'
                   />
                 )}
               </div>
