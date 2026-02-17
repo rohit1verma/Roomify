@@ -1,4 +1,4 @@
-# <img src="public/favicon.ico" width="32" height="32" /> Roomify 2.0
+# <img src="public/favicon.svg" width="32" height="32" /> Roomify
 
 > Build beautiful spaces at the speed of thought.
 
