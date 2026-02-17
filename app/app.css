@@ -530,6 +530,10 @@
                                     @apply text-[10px] font-bold uppercase tracking-wider text-zinc-800;
                                 }
                             }
+
+                            .delete-btn {
+                                @apply absolute top-3 right-3 w-8 h-8 rounded-md bg-white/90 backdrop-blur-md border border-zinc-200 shadow-sm flex items-center justify-center text-zinc-500 hover:text-red-500 hover:bg-red-50 transition-all duration-200 z-10;
+                            }
                         }
 
                         .card-body {
@@ -594,6 +598,38 @@
 
         &.loading {
             @apply text-sm text-zinc-500;
+        }
+    }
+
+    .confirm-modal {
+        @apply fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-md p-4;
+
+        .modal-content {
+            @apply bg-white rounded-2xl shadow-2xl max-w-sm w-full p-8 text-center border border-zinc-100;
+
+            .icon-box {
+                @apply w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6 text-red-500 border border-red-100;
+            }
+
+            h3 {
+                @apply text-2xl font-serif font-bold text-zinc-900 mb-3;
+            }
+
+            p {
+                @apply text-zinc-500 text-sm mb-8 leading-relaxed max-w-[240px] mx-auto;
+            }
+
+            .modal-actions {
+                @apply flex flex-col gap-3;
+
+                .delete-confirm {
+                    @apply w-full bg-red-500 hover:bg-red-600 text-white rounded-lg py-3 text-sm font-bold uppercase tracking-wider transition-all shadow-md active:scale-[0.98];
+                }
+
+                .cancel-btn {
+                    @apply w-full bg-zinc-50 hover:bg-zinc-100 text-zinc-500 rounded-lg py-3 text-sm font-bold uppercase tracking-wider transition-all;
+                }
+            }
         }
     }
 }

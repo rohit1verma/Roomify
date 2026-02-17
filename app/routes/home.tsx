@@ -1,11 +1,11 @@
 import type { Route } from "./+types/home";
 import Navbar from "../../components/Navbar";
-import { ArrowRight, ArrowUpRight, Clock, Layers } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Clock, Layers, Trash2 } from "lucide-react";
 import Button from "../../components/ui/Button";
 import Upload from "../../components/Upload";
 import { useNavigate } from "react-router";
 import { useEffect, useRef, useState } from "react";
-import { createProject, getProjects } from "../../lib/puter.action";
+import { createProject, getProjects, deleteProject } from "../../lib/puter.action";
 import { useOutletContext } from "react-router";
 
 export function meta({}: Route.MetaArgs) {
@@ -18,6 +18,8 @@ export function meta({}: Route.MetaArgs) {
 export default function Home() {
   const navigate = useNavigate();
   const [projects, setProjects] = useState<DesignItem[]>([]);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const isCreatingProjectRef = useRef(false);
   const { userName, userId } = useOutletContext<AuthContext>();
 
@@ -73,6 +75,23 @@ export default function Home() {
 
     fetchProjects();
   }, []);
+
+  const handleDelete = async () => {
+    if (!deleteId) return;
+
+    try {
+      setIsDeleting(true);
+      const success = await deleteProject(deleteId);
+      if (success) {
+        setProjects((prev) => prev.filter((p) => p.id !== deleteId));
+        setDeleteId(null);
+      } else {
+        alert("Failed to delete project. Please try again.");
+      }
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <div className='home'>
@@ -148,6 +167,17 @@ export default function Home() {
                     <div className='badge'>
                       <span>Community</span>
                     </div>
+
+                    <button
+                      className='delete-btn'
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleteId(id);
+                      }}
+                      title='Delete Project'
+                    >
+                      <Trash2 size={20} />
+                    </button>
                   </div>
 
                   <div className='card-body'>
@@ -169,6 +199,37 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {deleteId && (
+        <div className='confirm-modal' onClick={() => setDeleteId(null)}>
+          <div className='modal-content' onClick={(e) => e.stopPropagation()}>
+            <div className='icon-box'>
+              <Trash2 size={24} />
+            </div>
+            <h3>Delete Project?</h3>
+            <p>
+              This action is permanent. All architectural data and renders will
+              be removed from the grid.
+            </p>
+            <div className='modal-actions'>
+              <button
+                className='delete-confirm'
+                onClick={handleDelete}
+                disabled={isDeleting}
+              >
+                {isDeleting ? "Deleting..." : "Yes, Delete"}
+              </button>
+              <button
+                className='cancel-btn'
+                onClick={() => setDeleteId(null)}
+                disabled={isDeleting}
+              >
+                Keep Project
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
