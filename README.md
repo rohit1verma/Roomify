@@ -1,87 +1,97 @@
-# Welcome to React Router!
+# <img src="public/favicon.ico" width="32" height="32" /> Roomify 2.0
 
-A modern, production-ready template for building full-stack React applications using React Router.
+> Build beautiful spaces at the speed of thought.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
-
-## Features
-
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
-
-## Getting Started
-
-### Installation
-
-Install the dependencies:
-
-```bash
-npm install
-```
-
-### Development
-
-Start the development server with HMR:
-
-```bash
-npm run dev
-```
-
-Your application will be available at `http://localhost:5173`.
-
-## Building for Production
-
-Create a production build:
-
-```bash
-npm run build
-```
-
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
-
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+Roomify is an **AI-first architectural design environment** that helps users visualize, render, and manage architectural projects with unprecedented speed. By transforming 2D floor plans into photorealistic 3D visualizations, Roomify bridges the gap between technical drafting and visual realization.
 
 ---
 
-Built with ❤️ using React Router.
+## ✨ Key Features
+
+- 🏗️ **AI Visualization**: Convert 2D blueprints into stunning 3D renders using advanced neural rendering.
+- 🎨 **Material Exploration**: Experiment with different floor textures and wall colors in real-time.
+- 🗂️ **Project Management**: Securely store and organize your architecture projects in a sleek grid interface.
+- �️ **Permanent Demolition**: Unique themed delete functionality with a "Demolish" confirmation modal.
+- � **High-Res Export**: Download your renders for professional presentations or client meetings.
+- 🌐 **Instant Sharing**: Share your vision with the community via simple, permanent links.
+- ☁️ **Cloud Storage**: Powered by Puter.js for secure, decentralized hosting and data persistence.
+
+---
+
+## 🛠️ The Tech Stack
+
+Roomify is built on a modern, high-performance stack designed for speed and scalability:
+
+- **Frontend**: [React Router 7](https://reactrouter.com/) (Remix-style)
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) & Vanilla CSS
+- **Backend/Infrastructure**: [Puter.js](https://puter.com/) (Distributed KV Storage, Worker Nodes, and Hosting)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **UI Components**: Handcrafted custom components for a premium feel.
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (v18 or higher)
+- A Puter.com account (for environment variables)
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/rohit1verma/Roomify.git
+   cd Roomify
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Configure environment:
+   Create a `.env.local` file in the root and add your Puter worker URL:
+   ```env
+   VITE_PUTER_WORKER_URL=your_worker_url_here
+   ```
+
+4. Launch the development server:
+   ```bash
+   npm run dev
+   ```
+
+---
+
+## 📂 Project Structure
+
+```text
+├── app/
+│   ├── routes/          # Application pages (Home, Visualizer)
+│   ├── components/      # UI components (Navbar, Upload, Modal)
+│   └── app.css          # Global design system
+├── lib/
+│   ├── puter.action.ts  # Puter SDK service layer
+│   └── puter.worker.js  # Edge worker logic for KV storage
+├── public/              # Static assets
+└── type.d.ts            # Global TypeScript definitions
+```
+
+---
+
+## 🎨 Design System
+
+Roomify follows a minimalist "Editorial" aesthetic:
+- **Typography**: *Instrument Serif* for headlines, *Inter* (Sans) for data.
+- **Palette**: A balance of `Background (#FDFBF7)` and high-contrast `Primary Orange (#F97316)`.
+- **Aesthetic**: Glassmorphism, subtle micro-animations, and clean grid layouts.
+
+---
+
+## 🤝 Contributing
+
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+---
+
+Built with ❤️ by [Rohit Kumar](https://github.com/rohit1verma) using React Router and Puter.
